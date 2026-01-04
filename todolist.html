@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bidhi's Task Manager</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="todolist.css">
+</head>
+<body>
+  <div class="task-manager">
+    <h1>💕 Bidhi's To-Do List 💕</h1>
+    <div class="add-section">
+      <input type="text" id="newTask" placeholder="What needs to be done?" />
+      <button id="createTask">Add</button>
+    </div>
+    <div class="view-options">
+      <button class="view-btn selected" data-view="all">All</button>
+      <button class="view-btn" data-view="completed">Completed</button>
+      <button class="view-btn" data-view="pending">Pending</button>
+    </div>
+    <ul id="allTasks"></ul>
+    <div class="summary">
+      <span id="taskSummary">No tasks yet</span>
+    </div>
+  </div>
+  <script src="todolist.js"></script>
+</body>
+</html>
