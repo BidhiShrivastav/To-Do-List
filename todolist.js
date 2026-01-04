@@ -79,16 +79,7 @@ $(document).ready(function() {
       }
     });
     
-    // Update summary
-    let completedCount = taskList.filter(t => t.isDone).length;
-    let totalCount = taskList.length;
-    if (totalCount === 0) {
-      $("#taskSummary").text("No tasks yet - add one to get started!");
-    } else {
-      $("#taskSummary").text(`${totalCount} total tasks • ${completedCount} completed • ${totalCount - completedCount} remaining`);
-    }
-  }
-});
+ 
  // Save to localStorage
   function saveTasks() {
     localStorage.setItem("taskList", JSON.stringify(taskList));
