@@ -89,3 +89,22 @@ $(document).ready(function() {
     }
   }
 });
+ // Save to localStorage
+  function saveTasks() {
+    localStorage.setItem("taskList", JSON.stringify(taskList));
+  }
+
+  // Task summary
+  function updateSummary() {
+    let completed = taskList.filter(t => t.isDone).length;
+    let total = taskList.length;
+
+    if (total === 0) {
+      $("#taskSummary").text("No tasks yet - add one to get started!");
+    } else {
+      $("#taskSummary").text(
+        `${total} total • ${completed} completed • ${total - completed} remaining`
+      );
+    }
+  }
+});
