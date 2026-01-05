@@ -1,86 +1,97 @@
-$(document).ready(function() {
-  let taskList = [];
+$(document).ready(function () {
+  let taskList = JSON.parse(localStorage.getItem("taskList")) || [];
   let activeView = "all";
-  
+
   displayTasks();
-  
+
   // Create new task
   $("#createTask").click(createNewTask);
-  $("#newTask").keypress(function(e) {
+  $("#newTask").keypress(function (e) {
     if (e.which === 13) createNewTask();
   });
-  
+
   function createNewTask() {
     let taskContent = $("#newTask").val().trim();
     if (taskContent !== "") {
       taskList.push({ content: taskContent, isDone: false });
+      saveTasks();
       displayTasks();
       $("#newTask").val("");
     }
   }
-  
-  // Mark task as complete/incomplete
-  $("#allTasks").on("click", ".task-content", function() {
+
+  // Toggle complete/incomplete
+  $("#allTasks").on("click", ".task-content", function () {
     let taskIndex = $(this).parent().data("position");
     taskList[taskIndex].isDone = !taskList[taskIndex].isDone;
+    saveTasks();
     displayTasks();
   });
-  
+
   // Remove task
-  $("#allTasks").on("click", ".remove-btn", function(e) {
+  $("#allTasks").on("click", ".remove-btn", function (e) {
     e.stopPropagation();
-    let taskIndex = $(this).parent().parent().data("position");
+    let taskIndex = $(this).closest("li").data("position");
     taskList.splice(taskIndex, 1);
+    saveTasks();
     displayTasks();
   });
-  
+
   // Modify task
-  $("#allTasks").on("click", ".modify-btn", function(e) {
+  $("#allTasks").on("click", ".modify-btn", function (e) {
     e.stopPropagation();
-    let taskIndex = $(this).parent().parent().data("position");
-    let updatedContent = prompt("Update your task:", taskList[taskIndex].content);
+    let taskIndex = $(this).closest("li").data("position");
+    let updatedContent = prompt(
+      "Update your task:",
+      taskList[taskIndex].content
+    );
     if (updatedContent !== null && updatedContent.trim() !== "") {
       taskList[taskIndex].content = updatedContent.trim();
+      saveTasks();
       displayTasks();
     }
   });
-  
+
   // View filter
-  $(".view-btn").click(function() {
+  $(".view-btn").click(function () {
     $(".view-btn").removeClass("selected");
     $(this).addClass("selected");
     activeView = $(this).data("view");
     displayTasks();
   });
-  
-  // Display tasks based on filter
+
+  // Display tasks
   function displayTasks() {
     $("#allTasks").empty();
-    let visibleCount = 0;
-    
+
     taskList.forEach((task, idx) => {
       if (
         activeView === "all" ||
         (activeView === "completed" && task.isDone) ||
         (activeView === "pending" && !task.isDone)
       ) {
-        visibleCount++;
         let taskItem = $("<li>").attr("data-position", idx);
-        let contentDiv = $("<div>").addClass("task-content").text((task.isDone ? "✓ " : "○ ") + task.content);
+
+        let contentDiv = $("<div>")
+          .addClass("task-content")
+          .text((task.isDone ? "✓ " : "○ ") + task.content);
+
         if (task.isDone) contentDiv.addClass("done");
-        
+
         let btnContainer = $("<div>").addClass("action-btns");
         let modifyButton = $("<button>").text("Edit").addClass("modify-btn");
         let removeButton = $("<button>").text("Delete").addClass("remove-btn");
+
         btnContainer.append(modifyButton, removeButton);
-        
         taskItem.append(contentDiv, btnContainer);
         $("#allTasks").append(taskItem);
       }
     });
-    
- 
- // Save to localStorage
+
+    updateSummary();
+  }
+
+  // Save to localStorage
   function saveTasks() {
     localStorage.setItem("taskList", JSON.stringify(taskList));
   }
